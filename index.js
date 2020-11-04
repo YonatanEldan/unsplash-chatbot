@@ -54,7 +54,8 @@ app.post('/unsplash', (req, res) => {
         console.log('Error getting chatbot_token from database.', error)
       } else {
         if (results.rows[0].expires_on > (new Date().getTime() / 1000)) {
-          getPhoto(results.rows[0].token)
+          //getPhoto(results.rows[0].token)
+
         } else {
           getChatbotToken()
         }
@@ -65,8 +66,63 @@ app.post('/unsplash', (req, res) => {
     res.send('Unauthorized request to Unsplash Chatbot for Zoom.')
   }
 
-  function getPhoto (chatbotToken) {
+  /*function getPhoto (chatbotToken) {
     request(`https://api.unsplash.com/photos/random?query=${req.body.payload.cmd}&orientation=landscape&client_id=${process.env.unsplash_access_key}`, (error, body) => {
+      if (error) {
+        console.log('Error getting photo from Unsplash.', error)
+        var errors = [
+          {
+            'type': 'section',
+            'sidebar_color': '#D72638',
+            'sections': [{
+              'type': 'message',
+              'text': 'Error getting photo from Unsplash.'
+            }]
+          }
+        ]
+        sendChat(errors, chatbotToken)
+      } else {
+        body = JSON.parse(body.body)
+        if (body.errors) {
+          var errors = [
+            {
+              'type': 'section',
+              'sidebar_color': '#D72638',
+              'sections': body.errors.map((error) => {
+                return { 'type': 'message', 'text': error }
+              })
+            }
+          ]
+          sendChat(errors, chatbotToken)
+        } else {
+          var photo = [
+            {
+              'type': 'section',
+              'sidebar_color': body.color,
+              'sections': [
+                {
+                  'type': 'attachments',
+                  'img_url': body.urls.regular,
+                  'resource_url': body.user.links.html,
+                  'information': {
+                    'title': {
+                      'text': 'Photo by ' + body.user.name
+                    },
+                    'description': {
+                      'text': 'Click to view on Unsplash'
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+          sendChat(photo, chatbotToken)
+        }
+      }
+    })
+  }*/
+  function getPhoto (chatbotToken) {
+    request(`https://hooks.zapier.com/hooks/catch/5253213/oqjypc0?query=${req.body.payload.cmd}`, (error, body) => {
       if (error) {
         console.log('Error getting photo from Unsplash.', error)
         var errors = [
